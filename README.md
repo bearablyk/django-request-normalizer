@@ -19,7 +19,7 @@ pip install django-request-normalizer
 
 ## Usage
 
-1.  Add the middleware to your `MIDDLEWARE` list in `settings.py`. It should be placed before any middleware that accesses request data, such as DRF's authentication classes or your own views.
+Add the middleware to your `MIDDLEWARE` list in `settings.py`. It should be placed before any middleware that accesses request data, such as DRF's authentication classes or your own views.
 
 ```python
 # settings.py
@@ -29,3 +29,35 @@ MIDDLEWARE = [
     # ...
 ]
 ```
+
+## ⚙️ Configuration
+
+To enable normalization, you must specify a list of URL prefixes for which it will be applied. This is done in your `settings.py`.
+
+```python
+# settings.py
+
+# A list of URL prefixes for which normalization will be active.
+API_PREFIXES = ['/api/v1/', '/api/v2/']
+```
+
+---
+
+## 🧮 Normalization Rules
+
+| Input Value         | Key          | Output Value      | Explanation |
+|----------------------|---------------|-------------------|--------------|
+| `"null"`             | any           | `None`            | The string "null" becomes None |
+| `"true"`             | any           | `True`            | The string "true" becomes True |
+| `"false"`            | any           | `False`           | The string "false" becomes False |
+| `0` (integer)        | `user_id`     | `None`            | 0 for _id or id fields becomes None |
+| `"0"` (string)       | `id`          | `None`            | The string "0" for _id or id fields becomes None |
+| `""` (empty string)  | `category_id` | `None`            | An empty string for _id or id fields becomes None |
+| `" test%20string "`  | `name`        | `"test string"`   | Whitespace is trimmed and characters are decoded |
+| `" User@Example.com "` | `email`     | `"user@example.com"` | Whitespace is removed and the string is lowercased |
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
