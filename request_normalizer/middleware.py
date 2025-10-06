@@ -1,4 +1,4 @@
-from .RequestRepository import RequestRepository
+from request_utils import RequestUtils
 
 
 class RequestNormalizerMiddleware:
@@ -6,6 +6,6 @@ class RequestNormalizerMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        RequestRepository.convert_request_params(request)
+        RequestUtils.convert_request_params(request)
 
         return self.get_response(request)
